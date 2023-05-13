@@ -23,7 +23,7 @@ class ContainerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
-        title = "Container"
+        title = "ContainerActivity"
 
         XLogger.getLogger("CachedViewModel").d { "$this ViewModel=$vm" }
 

@@ -18,8 +18,6 @@ import kotlinx.coroutines.launch
  * GitHub: https://github.com/ccolorcat
  */
 class MainFragment : Fragment() {
-    private val viewModel: MainViewModel by viewModels()
-
     private val vm: MainViewModel by cachedViewModels()
 
     private lateinit var binding: FragmentMainBinding

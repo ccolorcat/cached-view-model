@@ -12,7 +12,10 @@ import cc.colorcat.xlogger.XLogger
  * Date: 2023-05-11
  * GitHub: https://github.com/ccolorcat
  */
-internal class ViewModelWrapper<VM : ViewModel>(private val key: String, val viewModel: VM) : DefaultLifecycleObserver {
+internal class ViewModelWrapper<VM : ViewModel>(
+    private val key: String,
+    val viewModel: VM
+) : DefaultLifecycleObserver {
     private val logger = XLogger.getLogger("CachedViewModel")
     private val handler by lazy(LazyThreadSafetyMode.NONE) { Handler(Looper.getMainLooper()) }
 
@@ -31,7 +34,7 @@ internal class ViewModelWrapper<VM : ViewModel>(private val key: String, val vie
         owner.lifecycle.removeObserver(this)
         logger.i { "onDestroy: action = decrease: $owner, $viewModel, count=${count}" }
         if (count == 0) {
-            handler.postDelayed(this::destroy, 5000)
+            handler.post(this::destroy)
         }
     }
 

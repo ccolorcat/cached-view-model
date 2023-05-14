@@ -10,18 +10,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp" />
 
     <TextView
         android:id="@+id/count"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp" />
 
     <androidx.fragment.app.FragmentContainerView
-        android:background="#808080"
         android:id="@+id/container"
+        android:name="cc.colorcat.viewmodel.sample.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:name="cc.colorcat.viewmodel.sample.MainFragment"
-        android:layout_weight="1" />
-
+        android:layout_marginTop="32dp"
+        android:layout_weight="1"
+        android:background="#808080" />
 </LinearLayout>

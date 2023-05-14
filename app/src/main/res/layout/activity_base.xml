@@ -11,12 +11,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top" />
 
-
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="content..." />
+        android:layout_marginTop="32dp" />
+
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp" />
 
     <Button
         android:id="@+id/increase"
@@ -33,10 +38,9 @@
         android:text="-" />
 
     <Button
-        android:id="@+id/jump"
+        android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="jump" />
-
+        android:visibility="gone" />
 </LinearLayout>

@@ -1,5 +1,6 @@
 package cc.colorcat.viewmodel.sample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -19,11 +20,14 @@ class ContainerActivity : AppCompatActivity() {
         ActivityContainerBinding.inflate(layoutInflater)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         setSupportActionBar(binding.toolbar)
-        title = "ContainerActivity"
+        title = this::class.java.simpleName
+        binding.info.text = "$this\n$vm"
 
         XLogger.getLogger("CachedViewModel").d { "$this ViewModel=$vm" }
 
@@ -32,6 +36,5 @@ class ContainerActivity : AppCompatActivity() {
                 binding.count.text = it.toString()
             }
         }
-
     }
 }

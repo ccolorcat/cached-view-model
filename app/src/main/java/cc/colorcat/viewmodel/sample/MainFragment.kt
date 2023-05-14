@@ -1,15 +1,14 @@
 package cc.colorcat.viewmodel.sample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import cc.colorcat.viewmodel.cachedViewModels
 import cc.colorcat.viewmodel.sample.databinding.FragmentMainBinding
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 /**
@@ -29,8 +28,10 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.info.text = "$this\n$vm"
         binding.increase.setOnClickListener {
             vm.increase()
         }
@@ -40,7 +41,7 @@ class MainFragment : Fragment() {
 
         lifecycleScope.launch {
             vm.count.collect {
-                binding.text.text = it.toString()
+                binding.count.text = it.toString()
             }
         }
     }

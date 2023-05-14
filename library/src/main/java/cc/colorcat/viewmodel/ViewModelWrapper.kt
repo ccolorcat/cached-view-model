@@ -5,7 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
-import cc.colorcat.xlogger.XLogger
 
 /**
  * Author: ccolorcat
@@ -16,8 +15,7 @@ internal class ViewModelWrapper<VM : ViewModel>(
     private val key: String,
     val viewModel: VM
 ) : DefaultLifecycleObserver {
-    private val logger = XLogger.getLogger("CachedViewModel")
-    private val handler by lazy(LazyThreadSafetyMode.NONE) { Handler(Looper.getMainLooper()) }
+    private val handler = Handler(Looper.getMainLooper())
 
     private var count = 0
 
@@ -25,14 +23,12 @@ internal class ViewModelWrapper<VM : ViewModel>(
         super.onCreate(owner)
         ++count
         handler.removeCallbacksAndMessages(null)
-        logger.d { "onCreate: action = increase: $owner, $viewModel, count=${count}" }
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         --count
         owner.lifecycle.removeObserver(this)
-        logger.i { "onDestroy: action = decrease: $owner, $viewModel, count=${count}" }
         if (count == 0) {
             handler.post(this::destroy)
         }
@@ -40,7 +36,6 @@ internal class ViewModelWrapper<VM : ViewModel>(
 
     private fun destroy() {
         if (count == 0) {
-            logger.w { "destroy $viewModel" }
             CachedViewModelStore.remove(key, this)
             clear()
         }

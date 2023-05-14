@@ -1,13 +1,12 @@
 package cc.colorcat.viewmodel.sample
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import cc.colorcat.viewmodel.sample.databinding.ActivityMainBinding
-import cc.colorcat.xlogger.XLogger
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -18,14 +17,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
         setSupportActionBar(binding.toolbar)
-        title = "MainActivity"
-
-        XLogger.getLogger("CachedViewModel").d { "$this ViewModel=$vm" }
-
+        title = this::class.java.simpleName
+        binding.info.text = "$this\n$vm"
 
         binding.increase.setOnClickListener {
             vm.increase()
@@ -33,13 +32,13 @@ class MainActivity : AppCompatActivity() {
         binding.decrease.setOnClickListener {
             vm.decrease()
         }
-        binding.jump.setOnClickListener {
-            startActivity(Intent(this, BActivity::class.java))
+        binding.next.setOnClickListener {
+            startActivity(Intent(this, AActivity::class.java))
         }
 
         lifecycleScope.launch {
             vm.count.collect {
-                binding.text.text = it.toString()
+                binding.count.text = it.toString()
             }
         }
     }

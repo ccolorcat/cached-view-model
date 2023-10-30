@@ -2,6 +2,7 @@ package cc.colorcat.viewmodel.sample
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ class MainFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("CachedViewModel", "$this ViewModel=$vm")
         binding.info.text = "$this\n$vm"
         binding.increase.setOnClickListener {
             vm.increase()
@@ -44,5 +46,15 @@ class MainFragment : Fragment() {
                 binding.count.text = it.toString()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        Log.d("CachedViewModel", "$this onDestroyView")
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        Log.w("CachedViewModel", "$this onDestroy")
+        super.onDestroy()
     }
 }

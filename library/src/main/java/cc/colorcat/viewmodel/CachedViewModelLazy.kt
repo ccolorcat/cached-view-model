@@ -1,5 +1,8 @@
 package cc.colorcat.viewmodel
 
+import androidx.annotation.RestrictTo
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,13 +14,21 @@ import kotlin.reflect.KClass
  * Date: 2023-05-11
  * GitHub: https://github.com/ccolorcat
  */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class CachedViewModelLazy<VM : ViewModel>(
-    private val owner: LifecycleOwner,
+    private val ownerProducer: () -> LifecycleOwner,
     private val viewModelClass: KClass<VM>,
     private val factoryProducer: () -> ViewModelProvider.Factory,
     private val extrasProducer: () -> CreationExtras = { CreationExtras.Empty }
 ) : Lazy<VM> {
     private var cached: ViewModelWrapper<VM>? = null
+    private val observer: LifecycleObserver = object : DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            owner.lifecycle.removeObserver(this)
+            cached = null
+        }
+    }
 
     override val value: VM
         get() {
@@ -37,6 +48,9 @@ class CachedViewModelLazy<VM : ViewModel>(
 
     private fun cache(wrapper: ViewModelWrapper<VM>) {
         cached = wrapper
-        owner.lifecycle.addObserver(wrapper)
+        ownerProducer.invoke().lifecycle.run {
+            addObserver(observer)
+            addObserver(wrapper)
+        }
     }
 }

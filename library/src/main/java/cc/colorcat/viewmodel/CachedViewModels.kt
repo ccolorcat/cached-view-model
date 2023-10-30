@@ -2,6 +2,7 @@ package cc.colorcat.viewmodel
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.MainThread
+import androidx.annotation.RestrictTo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModel
@@ -23,7 +24,7 @@ inline fun <reified VM : ViewModel> ComponentActivity.cachedViewModels(
         defaultViewModelProviderFactory
     }
     return CachedViewModelLazy(
-        owner = this,
+        ownerProducer = { this },
         viewModelClass = VM::class,
         factoryProducer = factoryPromise,
         extrasProducer = { extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras }
@@ -31,7 +32,7 @@ inline fun <reified VM : ViewModel> ComponentActivity.cachedViewModels(
 }
 
 
-
+@MainThread
 inline fun <reified VM : ViewModel> Fragment.cachedViewModels(
     noinline extrasProducer: (() -> CreationExtras)? = null,
     noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
@@ -51,6 +52,8 @@ inline fun <reified VM : ViewModel> Fragment.cachedViewModels(
 }
 
 
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+@MainThread
 fun <VM : ViewModel> Fragment.createCachedViewModelLazy(
     viewModelClass: KClass<VM>,
     extrasProducer: () -> CreationExtras = { defaultViewModelCreationExtras },
@@ -60,7 +63,7 @@ fun <VM : ViewModel> Fragment.createCachedViewModelLazy(
         defaultViewModelProviderFactory
     }
     return CachedViewModelLazy(
-        owner = this,
+        ownerProducer = { this.viewLifecycleOwner },
         viewModelClass = viewModelClass,
         factoryProducer = factoryPromise,
         extrasProducer = extrasProducer

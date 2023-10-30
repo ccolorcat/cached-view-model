@@ -17,7 +17,8 @@ internal class CachedViewModelProvider(
     private val factory: ViewModelProvider.Factory,
     private val defaultCreationExtras: CreationExtras = CreationExtras.Empty,
 ) {
-    private val store = CachedViewModelStore
+    private val store: CachedViewModelStore
+        get() = CachedViewModelStore
 
     @MainThread
     fun <T : ViewModel> get(modelClass: Class<T>): ViewModelWrapper<T> {

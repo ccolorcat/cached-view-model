@@ -5,6 +5,7 @@ import android.os.Looper
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStore
 
 /**
  * Author: ccolorcat
@@ -42,15 +43,9 @@ internal class ViewModelWrapper<VM : ViewModel>(
     }
 
     fun clear() {
-        try {
-            method?.invoke(viewModel)
-        } catch (ignore: Throwable) {
+        ViewModelStore().run {
+            put(key, viewModel)
+            clear()
         }
-    }
-
-    private companion object {
-        private val method = kotlin.runCatching {
-            ViewModel::class.java.getDeclaredMethod("clear").apply { isAccessible = true }
-        }.getOrNull()
     }
 }

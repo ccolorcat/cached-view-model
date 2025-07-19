@@ -1,5 +1,6 @@
 package cc.colorcat.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,7 @@ internal class CachedViewModelProvider(
         return get("$DEFAULT_KEY:$canonicalName", modelClass)
     }
 
+    @SuppressLint("RestrictedApi")
     @Suppress("UNCHECKED_CAST")
     @MainThread
     fun <T : ViewModel> get(key: String, modelClass: Class<T>): CachedViewModelHolder<T> {

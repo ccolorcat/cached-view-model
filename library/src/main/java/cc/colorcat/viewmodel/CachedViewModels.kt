@@ -63,7 +63,7 @@ fun <VM : ViewModel> Fragment.createCachedViewModelLazy(
         defaultViewModelProviderFactory
     }
     return CachedViewModelLazy(
-        ownerProducer = { this.viewLifecycleOwner },
+        ownerProducer = { this },
         viewModelClass = viewModelClass,
         factoryProducer = factoryPromise,
         extrasProducer = extrasProducer

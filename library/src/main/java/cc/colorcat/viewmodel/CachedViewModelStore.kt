@@ -6,19 +6,19 @@ package cc.colorcat.viewmodel
  * GitHub: https://github.com/ccolorcat
  */
 internal object CachedViewModelStore {
-    private val cachedViewModel: MutableMap<String, ViewModelWrapper<*>> = hashMapOf()
+    private val viewModelCache: MutableMap<String, CachedViewModelHolder<*>> = hashMapOf()
 
-    internal fun put(key: String, wrapper: ViewModelWrapper<*>) {
-        cachedViewModel.put(key, wrapper)?.clear()
+    internal fun put(key: String, holder: CachedViewModelHolder<*>) {
+        viewModelCache.put(key, holder)?.forceDestroy()
     }
 
-    internal fun get(key: String): ViewModelWrapper<*>? {
-        return cachedViewModel[key]
+    internal fun get(key: String): CachedViewModelHolder<*>? {
+        return viewModelCache[key]
     }
 
-    internal fun remove(key: String, wrapper: ViewModelWrapper<*>) {
-        if (cachedViewModel[key] === wrapper) {
-            cachedViewModel.remove(key)
+    internal fun remove(key: String, holder: CachedViewModelHolder<*>) {
+        if (viewModelCache[key] === holder) {
+            viewModelCache.remove(key)
         }
     }
 }

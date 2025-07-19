@@ -16,41 +16,41 @@ import kotlin.reflect.KClass
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 class CachedViewModelLazy<VM : ViewModel>(
-    private val ownerProducer: () -> LifecycleOwner,
+    private val lifecycleOwnerProducer: () -> LifecycleOwner,
     private val viewModelClass: KClass<VM>,
     private val factoryProducer: () -> ViewModelProvider.Factory,
     private val extrasProducer: () -> CreationExtras = { CreationExtras.Empty }
 ) : Lazy<VM> {
-    private var cached: ViewModelWrapper<VM>? = null
-    private val observer: LifecycleObserver = object : DefaultLifecycleObserver {
+    private var cachedViewModelHolder: CachedViewModelHolder<VM>? = null
+    private val lifecycleObserver: LifecycleObserver = object : DefaultLifecycleObserver {
         override fun onDestroy(owner: LifecycleOwner) {
             super.onDestroy(owner)
             owner.lifecycle.removeObserver(this)
-            cached = null
+            cachedViewModelHolder = null
         }
     }
 
     override val value: VM
         get() {
-            val wrapper = cached
-            return if (wrapper == null) {
+            val holder = this@CachedViewModelLazy.cachedViewModelHolder
+            return if (holder == null) {
                 val factory = factoryProducer()
                 CachedViewModelProvider(factory, extrasProducer())
                     .get(viewModelClass.java)
-                    .also { cache(it) }
+                    .also { cacheHolder(it) }
                     .viewModel
             } else {
-                wrapper.viewModel
+                holder.viewModel
             }
         }
 
-    override fun isInitialized(): Boolean = cached != null
+    override fun isInitialized(): Boolean = cachedViewModelHolder != null
 
-    private fun cache(wrapper: ViewModelWrapper<VM>) {
-        cached = wrapper
-        ownerProducer.invoke().lifecycle.run {
-            addObserver(observer)
-            addObserver(wrapper)
+    private fun cacheHolder(holder: CachedViewModelHolder<VM>) {
+        cachedViewModelHolder = holder
+        lifecycleOwnerProducer.invoke().lifecycle.run {
+            addObserver(lifecycleObserver)
+            addObserver(holder)
         }
     }
 }

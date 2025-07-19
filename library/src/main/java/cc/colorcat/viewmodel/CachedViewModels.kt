@@ -24,7 +24,7 @@ inline fun <reified VM : ViewModel> ComponentActivity.cachedViewModels(
         defaultViewModelProviderFactory
     }
     return CachedViewModelLazy(
-        ownerProducer = { this },
+        lifecycleOwnerProducer = { this },
         viewModelClass = VM::class,
         factoryProducer = factoryPromise,
         extrasProducer = { extrasProducer?.invoke() ?: this.defaultViewModelCreationExtras }
@@ -63,7 +63,7 @@ fun <VM : ViewModel> Fragment.createCachedViewModelLazy(
         defaultViewModelProviderFactory
     }
     return CachedViewModelLazy(
-        ownerProducer = { this },
+        lifecycleOwnerProducer = { this },
         viewModelClass = viewModelClass,
         factoryProducer = factoryPromise,
         extrasProducer = extrasProducer

@@ -21,7 +21,7 @@ internal class CachedViewModelProvider(
         get() = CachedViewModelStore
 
     @MainThread
-    fun <T : ViewModel> get(modelClass: Class<T>): ViewModelWrapper<T> {
+    fun <T : ViewModel> get(modelClass: Class<T>): CachedViewModelHolder<T> {
         val canonicalName = modelClass.canonicalName
             ?: throw IllegalArgumentException("Local and anonymous classes can not be ViewModels")
         return get("$DEFAULT_KEY:$canonicalName", modelClass)
@@ -29,12 +29,12 @@ internal class CachedViewModelProvider(
 
     @Suppress("UNCHECKED_CAST")
     @MainThread
-    fun <T : ViewModel> get(key: String, modelClass: Class<T>): ViewModelWrapper<T> {
-        val wrapper = store.get(key)
-        val viewModel = wrapper?.viewModel
+    fun <T : ViewModel> get(key: String, modelClass: Class<T>): CachedViewModelHolder<T> {
+        val holder = store.get(key)
+        val viewModel = holder?.viewModel
         if (modelClass.isInstance(viewModel)) {
             (factory as? ViewModelProvider.OnRequeryFactory)?.onRequery(viewModel!!)
-            return wrapper as ViewModelWrapper<T>
+            return holder as CachedViewModelHolder<T>
         } else {
             if (viewModel != null) {
                 Log.w(
@@ -49,7 +49,7 @@ internal class CachedViewModelProvider(
             factory.create(modelClass, extras)
         } catch (e: AbstractMethodError) {
             factory.create(modelClass)
-        }.let { ViewModelWrapper(key, it) }.also { store.put(key, it) }
+        }.let { CachedViewModelHolder(key, it) }.also { store.put(key, it) }
     }
 
     private companion object {
